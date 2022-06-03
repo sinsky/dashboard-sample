@@ -1,16 +1,9 @@
-import React, { useEffect, useState, FC } from 'react';
-import { Navbar, Group, Code } from '@mantine/core';
+import React, { useState, FC } from 'react';
+import { Navbar, Group } from '@mantine/core';
 import { useDisclosure, useDocumentTitle } from '@mantine/hooks';
 import {
   ArrowNarrowLeft,
   Menu2,
-  Home,
-  Link,
-  Folder,
-  FileText,
-  Bell,
-  Settings,
-  Help,
   IconProps,
 } from 'tabler-icons-react';
 
@@ -20,25 +13,17 @@ type LocationType = {
   icon: FC<IconProps>;
 }
 
-type DataTypes = {
+export type DataTypes = {
   content: LocationType[];
   footer: LocationType[];
 }
 
-const data: DataTypes = {
-  content: [
-    { link: '#home', label: 'Home', icon: Home },
-    { link: '#footer', label: 'Folder', icon: Folder },
-    { link: "#notification", label: "Notification", icon: Bell },
-  ],
-  footer: [
-    { link: "#setting", label: "Setting", icon: Settings },
-    { link: "#help", label: "Help", icon: Help },
-  ]
-};
+type NavbarTypes = {
+  linkData: DataTypes
+}
 
-export const SimpleNavbar = () => {
-  const [active, setActive] = useState(data.content[0].label);
+export const SimpleNavbar = ({ linkData }: NavbarTypes) => {
+  const [active, setActive] = useState(linkData.content[0].label);
   useDocumentTitle(active);
   const [openNav, navHandler] = useDisclosure(true);
 
@@ -48,7 +33,7 @@ export const SimpleNavbar = () => {
     setActive(item.label);
   }
 
-  const linksContent = data.content.map(item => {
+  const linksContent = linkData.content.map(item => {
     const activeStyle = item.label === active ? "border-l-4 border-blue-300 bg-blue-100" : "ml-1 hover:ml-0 hover:border-l-4 border-slate-600 hover:bg-slate-100";
     return (
       <a className={"flex justify-start flex-nowrap items-center p-2 text-md text-slate-700 " + activeStyle} href={item.link} key={item.label}
@@ -58,11 +43,7 @@ export const SimpleNavbar = () => {
       </a>
     )
   });
-  const linksFooter = data.footer.map(item => {
-    const linkEvent = (event: React.MouseEvent<HTMLAnchorElement>) => {
-      event.preventDefault();
-      setActive(item.label);
-    };
+  const linksFooter = linkData.footer.map(item => {
     const activeStyle = item.label === active ? "border-l-4 border-blue-300 bg-blue-100" : "ml-1 hover:ml-0 hover:border-l-4 border-slate-600 hover:bg-slate-100";
     return (
       <a className={"flex justify-start flex-nowrap items-center p-2 text-md text-slate-700 " + activeStyle} href={item.link} key={item.label}
