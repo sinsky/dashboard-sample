@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { createStyles, Navbar, Group, Code } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
+import React, { useEffect, useState, FC } from 'react';
+import { Navbar, Group, Code } from '@mantine/core';
+import { useDisclosure, useDocumentTitle } from '@mantine/hooks';
 import {
   ArrowNarrowLeft,
   Menu2,
@@ -11,19 +11,54 @@ import {
   Bell,
   Settings,
   Help,
+  IconProps,
 } from 'tabler-icons-react';
 
-const data = [
-  { link: '', label: 'Home', icon: Home },
-  { link: '', label: 'Folder', icon: Folder },
-  { link: "", label: "Notification", icon: Bell },
-];
+type LocationType = {
+  link: string;
+  label: string;
+  icon: FC<IconProps>;
+}
+
+type DataTypes = {
+  content: LocationType[];
+  footer: LocationType[];
+}
+
+const data: DataTypes = {
+  content: [
+    { link: '#home', label: 'Home', icon: Home },
+    { link: '#footer', label: 'Folder', icon: Folder },
+    { link: "#notification", label: "Notification", icon: Bell },
+  ],
+  footer: [
+    { link: "#setting", label: "Setting", icon: Settings },
+    { link: "#help", label: "Help", icon: Help },
+  ]
+};
 
 export const SimpleNavbar = () => {
-  const [active, setActive] = useState(data[0].label);
+  const [active, setActive] = useState(data.content[0].label);
+  useDocumentTitle(active);
   const [openNav, navHandler] = useDisclosure(true);
 
-  const links = data.map(item => {
+  const linkOnClick = (event: React.MouseEvent<HTMLAnchorElement>, item: LocationType) => {
+    event.preventDefault();
+    location.replace(item.link);
+    setActive(item.label);
+  }
+
+  const linksContent = data.content.map(item => {
+    const activeStyle = item.label === active ? "border-l-4 border-blue-300 bg-blue-100" : "ml-1 hover:ml-0 hover:border-l-4 border-slate-600 hover:bg-slate-100";
+    return (
+      <a className={"flex justify-start flex-nowrap items-center p-2 text-md text-slate-700 " + activeStyle} href={item.link} key={item.label}
+        onClick={(e) => linkOnClick(e, item)}>
+        <item.icon className="m-2" />
+        <span className={"m-2 whitespace-nowrap " + (!openNav && "hidden")}>{item.label}</span>
+      </a>
+    )
+  });
+  const linksFooter = data.footer.map(item => {
     const linkEvent = (event: React.MouseEvent<HTMLAnchorElement>) => {
       event.preventDefault();
       setActive(item.label);
@@ -31,12 +66,12 @@ export const SimpleNavbar = () => {
     const activeStyle = item.label === active ? "border-l-4 border-blue-300 bg-blue-100" : "ml-1 hover:ml-0 hover:border-l-4 border-slate-600 hover:bg-slate-100";
     return (
       <a className={"flex justify-start flex-nowrap items-center p-2 text-md text-slate-700 " + activeStyle} href={item.link} key={item.label}
-        onClick={linkEvent}>
+        onClick={(e) => linkOnClick(e, item)}>
         <item.icon className="m-2" />
         <span className={"m-2 whitespace-nowrap " + (!openNav && "hidden")}>{item.label}</span>
       </a>
     )
-  })
+  });
 
   return (
     <Navbar className={"shrink-0 h-screen p-4 transition-all " + (openNav ? "w-[300px]" : "w-24")}>
@@ -49,19 +84,11 @@ export const SimpleNavbar = () => {
             }
           </button>
         </Group>
-        {links}
+        {linksContent}
       </Navbar.Section>
 
       <Navbar.Section className="border-t">
-        <a href="#setting" onClick={(event) => event.preventDefault()} className="flex justify-start items-center p-2 text-md text-slate-700 ml-1 hover:ml-0 hover:border-l-4 border-slate-600 hover:bg-slate-100">
-          <Settings className="m-2" />
-          <span className={"m-2 " + (!openNav && "hidden")}>設定</span>
-        </a>
-
-        <a href="#help" onClick={(event) => event.preventDefault()} className="flex justify-start items-center p-2 text-md text-slate-700 ml-1 hover:ml-0 hover:border-l-4 border-slate-600 hover:bg-slate-100">
-          <Help className="m-2" />
-          <span className={"m-2 " + (!openNav && "hidden")}>Help</span>
-        </a>
+        {linksFooter}
       </Navbar.Section>
     </Navbar>
   );
