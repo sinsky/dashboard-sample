@@ -1,8 +1,6 @@
 import "./styles/global.css";
 
-import React, { useEffect, useState } from 'react';
-import { createStyles, Navbar, Group, Code } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
+import React from 'react';
 import { SimpleNavbar, DataTypes } from "./SimpleNavbar";
 import {
   Home,
