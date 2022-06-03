@@ -1,16 +1,17 @@
 import React, { useState, FC } from 'react';
 import { Navbar, Group } from '@mantine/core';
-import { useDisclosure, useDocumentTitle } from '@mantine/hooks';
+import { useDisclosure } from '@mantine/hooks';
 import {
   ArrowNarrowLeft,
   Menu2,
   IconProps,
 } from 'tabler-icons-react';
 
-type LocationType = {
+export type LocationType = {
   link: string;
   label: string;
   icon: FC<IconProps>;
+  Content?: any;
 }
 
 export type DataTypes = {
@@ -19,22 +20,22 @@ export type DataTypes = {
 }
 
 type NavbarTypes = {
-  linkData: DataTypes
+  linkData: DataTypes;
+  active: LocationType;
+  setActive: React.Dispatch<React.SetStateAction<LocationType>>;
 }
 
-export const SimpleNavbar = ({ linkData }: NavbarTypes) => {
-  const [active, setActive] = useState(linkData.content[0].label);
-  useDocumentTitle(active);
+export const SimpleNavbar = ({ linkData, active, setActive }: NavbarTypes) => {
   const [openNav, navHandler] = useDisclosure(true);
 
   const linkOnClick = (event: React.MouseEvent<HTMLAnchorElement>, item: LocationType) => {
     event.preventDefault();
     location.replace(item.link);
-    setActive(item.label);
+    setActive(item);
   }
 
   const linksContent = linkData.content.map(item => {
-    const activeStyle = item.label === active ? "border-l-4 border-blue-300 bg-blue-100" : "ml-1 hover:ml-0 hover:border-l-4 border-slate-600 hover:bg-slate-100";
+    const activeStyle = item.label === active.label ? "border-l-4 border-blue-300 bg-blue-100" : "ml-1 hover:ml-0 hover:border-l-4 border-slate-600 hover:bg-slate-100";
     return (
       <a className={"flex justify-start flex-nowrap items-center p-2 text-md text-slate-700 " + activeStyle} href={item.link} key={item.label}
         onClick={(e) => linkOnClick(e, item)}>
@@ -44,7 +45,7 @@ export const SimpleNavbar = ({ linkData }: NavbarTypes) => {
     )
   });
   const linksFooter = linkData.footer.map(item => {
-    const activeStyle = item.label === active ? "border-l-4 border-blue-300 bg-blue-100" : "ml-1 hover:ml-0 hover:border-l-4 border-slate-600 hover:bg-slate-100";
+    const activeStyle = item.label === active.label ? "border-l-4 border-blue-300 bg-blue-100" : "ml-1 hover:ml-0 hover:border-l-4 border-slate-600 hover:bg-slate-100";
     return (
       <a className={"flex justify-start flex-nowrap items-center p-2 text-md text-slate-700 " + activeStyle} href={item.link} key={item.label}
         onClick={(e) => linkOnClick(e, item)}>
