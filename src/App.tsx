@@ -22,7 +22,7 @@ const data: DataTypes = {
   ]
 };
 
-function App() {
+const App = () => {
   return (
     <div className="flex">
       <SimpleNavbar linkData={data} />
